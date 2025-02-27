@@ -1,113 +1,114 @@
 <template>
   <v-container class="d-flex justify-center pa-0" fluid>
-    <v-card class="w-100">
-      <v-carousel 
-        v-model="currentImage" 
-        cycle 
-        hide-delimiters 
+    <v-card class="carousel-card" elevation="0">
+      <v-carousel
+        v-model="currentImage"
+        cycle
+        hide-delimiters
         show-arrows="hover"
-        @mouseenter="stopAutoScroll" 
-        @mouseleave="startAutoScroll"
+        :interval="3000"
+        transition="fade-transition"
+        class="smooth-carousel"
+        :style="{ width: containerWidth, height: containerHeight }"
+        ref="carouselRef"
       >
-        <v-carousel-item 
-          v-for="(image, index) in imagesToUse" 
-          :key="index" 
+        <v-carousel-item
+          v-for="(image, index) in imagesToUse"
+          :key="index"
           class="image-container"
         >
-          <img :src="image" alt="Banner" class="responsive-image" />
+          <img
+            :src="image"
+            alt="Banner"
+            class="responsive-image"
+            ref="imageRefs"
+            @load="updateContainerSize"
+          />
         </v-carousel-item>
       </v-carousel>
-
-      <!-- Dots (Indicators) -->
     </v-card>
   </v-container>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, nextTick } from 'vue';
 
-// ✅ Using `src/assets/`
 import img1 from '@/assets/images/analytics/RB-1.png';
 import img2 from '@/assets/images/analytics/RB-2.jpg';
 import img3 from '@/assets/images/analytics/RB-3.jpg';
 
-const images = [img1, img2, img3];
-
-// ✅ Using `public/`
-const imagesPublic = [
-  '/images/analytics/RB-1.png',
-  '/images/analytics/RB-2.jpg',
-  '/images/analytics/RB-3.jpg',
-];
-
-// 👉 Change this if using `public/`
-const imagesToUse = images; // or `imagesPublic`
-
+const imagesToUse = [img1, img2, img3];
 const currentImage = ref(0);
-let intervalId: ReturnType<typeof setInterval>;
+const imageRefs = ref<HTMLImageElement[]>([]);
+const carouselRef = ref();
+const containerWidth = ref('800px'); // Default width
+const containerHeight = ref('auto'); // Default height
 
 onMounted(() => {
-  startAutoScroll();
+  nextTick(updateContainerSize);
+  window.addEventListener('resize', updateContainerSize);
 });
 
 onUnmounted(() => {
-  stopAutoScroll();
+  window.removeEventListener('resize', updateContainerSize);
 });
 
-const startAutoScroll = () => {
-  intervalId = setInterval(() => {
-    currentImage.value = (currentImage.value + 1) % imagesToUse.length;
-  }, 3000);
-};
+// Dynamically adjust width & height based on the first loaded image
+const updateContainerSize = () => {
+  nextTick(() => {
+    const firstImage = imageRefs.value.find(img => img?.complete);
+    if (firstImage) {
+      const screenWidth = window.innerWidth;
 
-const stopAutoScroll = () => {
-  clearInterval(intervalId);
+      containerWidth.value = screenWidth < 768 ? '100%' : `${firstImage.naturalWidth}px`;
+      containerHeight.value = screenWidth < 768 ? 'auto' : `${firstImage.naturalHeight}px`;
+    }
+  });
 };
 </script>
 
 <style scoped>
-/* Ensures the image width is 100% and height adjusts automatically */
+.carousel-card {
+  background: transparent !important;
+  box-shadow: none !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.smooth-carousel {
+  transition: transform 0.5s ease-in-out !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .image-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
+  background: transparent;
+  overflow: hidden;
 }
 
 .responsive-image {
+  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
   width: 100%;
-  height: auto ; /* This ensures the height matches the image's aspect ratio */
-  max-height: 100vh; /* Adjust this to control maximum height */
-}
-
-.v-card {
-  height: auto !important;
-}
-
-.v-carousel {
-  height: auto !important;
-}
-
-.v-carousel-item {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: auto !important;
-}
-
-.responsive-image {
-  width: 100%;
-  height: auto; /* Ensures it maintains the original image aspect ratio */
-  max-height: 100vh;
+  height: auto;
+  max-height: 100%;
   object-fit: contain;
+  display: block;
 }
 
-.v-carousel :deep(.v-btn--icon) {
-  display: none !important;
+@media (max-width: 768px) {
+  .responsive-image {
+    object-fit: cover;
+  }
 }
+
+/* Hide carousel controls */
+.v-carousel :deep(.v-btn--icon),
 .v-carousel :deep(.v-carousel__controls) {
   display: none !important;
 }
-
-
 </style>

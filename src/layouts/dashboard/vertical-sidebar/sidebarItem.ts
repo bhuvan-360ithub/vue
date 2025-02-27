@@ -30,11 +30,15 @@ const sidebarItem: menu[] = [
   },
 
   {
-    title: 'Shadows',
+    title: 'Profile',
     icon: 'custom-shadow',
     to: '/utils/shadows'
   },
-  { header: 'Pages' },
+  {
+    title: 'Membership Plans',
+    icon: 'custom-shadow',
+    to: '/utils/shadows'
+  },
   {
     title: 'Login',
     icon: 'custom-shield',

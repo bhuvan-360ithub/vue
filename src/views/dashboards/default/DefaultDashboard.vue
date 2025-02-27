@@ -1,5 +1,6 @@
 <script setup lang="ts">
 // imported components
+import WelcomeMessage from './components/WelcomeMessage.vue';
 import WelcomeBanner from './components/WelcomeBanner.vue';
 import ChartCards from '@/views/widgets/chart/components/ChartCards.vue';
 import RepeatCustomer from '@/views/widgets/chart/components/RepeatCustomer.vue';
@@ -14,6 +15,7 @@ import Datacard from '@/views/widgets/chart/components/Datacard.vue';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { fas } from '@fortawesome/free-solid-svg-icons';
+// import WelcomeMessage from './components/WelcomeMessage.vue';
 // import { mdi } from '@mdi/js';
 library.add(fas);
 console.log("topRightIcon path:", new URL('@/assets/images/badge.png', import.meta.url).href);
@@ -155,6 +157,8 @@ const cards2 = [
   <!-- -------------------------------------------------------------------- -->
   <!-- welcome banner -->
   <!-- -------------------------------------------------------------------- -->
+  
+  <WelcomeMessage />
   <v-row class="my-0">
     <v-col cols="12">
       <WelcomeBanner />

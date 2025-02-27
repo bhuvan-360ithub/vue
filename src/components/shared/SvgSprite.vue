@@ -2,6 +2,7 @@
   <svg class="pc-icon">
     <use :xlink:href="`${spritePath}#${props.name}`"></use>
   </svg>
+  
 </template>
 
 <script setup lang="ts">

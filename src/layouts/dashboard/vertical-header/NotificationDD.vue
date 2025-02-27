@@ -74,9 +74,6 @@ import SvgSprite from '@/components/shared/SvgSprite.vue';
           </v-list-item>
         </v-list>
       </perfect-scrollbar>
-      <div class="pt-2 text-center">
-        <a href="#" class="text-primary text-h6 link-hover">View All</a>
-      </div>
     </v-sheet>
   </v-menu>
 </template>

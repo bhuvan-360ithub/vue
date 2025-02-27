@@ -1,47 +1,46 @@
-<script setup lang="ts">
-import { ref, shallowRef } from 'vue';
+<template>
+  <div class="pricing-container">
+    <PricingCard 
+      :days="365" 
+      description="Basic Plan\nIdeal for individuals" 
+      :baseAmount="3500" 
+      :registrationFee="1000" 
+      :convenienceFee="(1000 * 0.025)" 
+      :gst="((1000 + 200 + (1000 * 0.025)) * 0.18)" 
+    />
+    <PricingCard 
+      :days="360" 
+      description="Standard Plan\nBest for small teams" 
+      :baseAmount="2500" 
+      :registrationFee="300" 
+      :convenienceFee="(2500 * 0.025)" 
+      :gst="((2500 + 300 + (2500 * 0.025)) * 0.18)" 
+    />
+    <PricingCard 
+      :days="720" 
+      description="Premium Plan\nPerfect for enterprises" 
+      :baseAmount="4500" 
+      :registrationFee="500" 
+      :convenienceFee="(4500 * 0.025)" 
+      :gst="((4500 + 500 + (4500 * 0.025)) * 0.18)" 
+    />
+  </div>
+</template>
 
-import BaseBreadcrumb from '@/components/shared/BaseBreadcrumb.vue';
-import UiParentCard from '@/components/shared/UiParentCard.vue';
+<script>
+import PricingCard from "./components/PricingCard.vue";
 
-const page = ref({ title: 'Sample Page' });
-const breadcrumbs = shallowRef([
-  {
-    title: 'Others',
-    disabled: false,
-    href: '#'
-  },
-  {
-    title: 'Sample Page',
-    disabled: true,
-    href: '#'
-  }
-]);
+export default {
+  components: { PricingCard },
+};
 </script>
 
-<template>
-  <BaseBreadcrumb :title="page.title" :breadcrumbs="breadcrumbs"></BaseBreadcrumb>
-  <v-row>
-    <v-col cols="12" md="12">
-      <UiParentCard title="Simple Title">
-        Lorem ipsum dolor sit amen, consenter nipissing eli, sed do elusion tempos incident ut laborers et doolie magna alissa. Ut enif ad
-        minim venice, quin nostrum exercitation illampu laborings nisi ut liquid ex ea commons construal. Duos aube grue dolor in
-        reprehended in voltage veil esse colum doolie eu fujian bulla parian. Exceptive sin ocean cuspidate non president, sunk in culpa qui
-        officiate descent molls anim id est labours.
-      </UiParentCard>
-    </v-col>
-  </v-row>
-
-  <v-app>
-    <v-container fluid>
-      <v-row no-gutters>
-        <v-col cols="12" md="3" class="left-section">
-          <ProfileCard :profile="profileData" />
-        </v-col>
-        <v-col cols="12" md="9" class="right-section">
-          <PersonalInformationForm :personalInfo="profileData.personalInfo" />
-        </v-col>
-      </v-row>
-    </v-container>
-  </v-app>
-</template>
+<style scoped>
+.pricing-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+  padding: 20px;
+}
+</style>

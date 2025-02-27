@@ -7,7 +7,7 @@ import * as directives from 'vuetify/directives';
 const light: ThemeDefinition = {
   dark: false,
   colors: {
-    primary: '#4680FF',
+    primary: '#084e9d',
     secondary: '#5B6B79',
     info: '#3ec9d6',
     success: '#2ca87f',

@@ -1,182 +1,72 @@
 <template>
   <v-container>
-    <!-- Event Basic Details -->
-    <v-card class="pa-4 mb-4">
-  <v-card-title class="text-left eventtitle">{{ event.title }}</v-card-title>
-  <v-card-text>
-    <p class="mb-4 text-left eventdescription">{{ event.description }}</p>
-    <v-row class="align-center">
-      <v-col cols="auto" class="d-flex align-center mr-4">
-        <font-awesome-icon icon="map-marker-alt" class="event-icon mr-2" />
-        <span class="event-details-text">{{ event.location }}</span>
+    <v-row>
+      <!-- Left Section (Event Details) -->
+      <v-col cols="12" md="4" class="event-left">
+        <EventDetails :eventData="eventData" />
       </v-col>
-      <v-col cols="auto" class="d-flex align-center mr-4">
-        <font-awesome-icon icon="calendar-alt" class="event-icon mr-2" />
-        <span class="event-details-text">{{ event.date }}</span>
-      </v-col>
-      <v-col cols="auto" class="d-flex align-center">
-        <font-awesome-icon icon="clock" class="event-icon mr-2" />
-        <span class="event-details-text">{{ event.time }}</span>
+
+      <!-- Right Section (Event Pricing) -->
+      <v-col cols="12" md="8" class="event-right">
+        <v-container>
+          <EventPricing :basePrice="eventData.basePrice" />
+          <EventPricing :title="'Additional Cost'" :isAddon="true" :addonPrice="eventData.addonPrice" />
+          <EventPricing  :basePrice="eventData.totalPrice" />
+          <EventPricing :isFinal="true" :totalPrice="eventData.finalTotal" />
+        </v-container>
+        <!-- <v-btn block color="primary" class="mt-3">Pay Now</v-btn> -->
       </v-col>
     </v-row>
-  </v-card-text>
-</v-card>
-
-
-    <!-- Event Cost Details -->
-    <v-card class="pa-4 mb-4">
-      <v-card-text>
-        <v-row class="d-flex justify-space-between eventcost" v-for="(value, key) in costDetails" :key="key">
-          <v-col>{{ key }}</v-col>
-          <v-col class="text-right eventcost">Rs. {{ value | currency }}</v-col>
-        </v-row>
-      </v-card-text>
-    </v-card>
-
-    <!-- Additional Cost -->
-    <v-card class="pa-4 mb-4">
-      <v-card-text>
-        <v-row class="d-flex justify-space-between cost-text">
-          <v-col>Additional Cost</v-col>
-        </v-row>
-        <v-row class="d-flex justify-space-between">
-          <v-col cols="1">
-            <v-checkbox v-model="includeAddon"></v-checkbox>
-          </v-col>
-          <v-col>
-            <v-row class="d-flex justify-space-between eventcost" v-for="(value, key) in addonDetails" :key="key">
-              <v-col>{{ key }}</v-col>
-              <v-col class="text-right eventcost">Rs. {{ value | currency }}</v-col>
-            </v-row>
-          </v-col>
-        </v-row>
-      </v-card-text>
-    </v-card>
-
-    <!-- Final Total -->
-    <v-card class="pa-4 mb-4">
-      <v-card-text>
-        <v-row class="d-flex justify-space-between eventcost" v-for="(value, key) in finalTotals" :key="key">
-          <v-col>{{ key }}</v-col>
-          <v-col class="text-right eventcost">Rs. {{ value | currency }}</v-col>
-        </v-row>
-      </v-card-text>
-    </v-card>
-
-    <!-- Payment Section -->
-    <v-card class="pa-4 mb-4">
-      <v-card-text>
-        <v-row class="d-flex justify-space-between total-text">
-          <v-col><strong>Total:</strong></v-col>
-          <v-col class="text-right totaltext"><strong>Rs.{{ finalAmount | currency }}</strong></v-col>
-        </v-row>
-        <v-btn block color="primary" class="custom-button">Pay Now for Event</v-btn>
-      </v-card-text>
-    </v-card>
   </v-container>
 </template>
 
 <script>
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { faMapMarkerAlt, faCalendarAlt, faClock } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-
-library.add(faMapMarkerAlt, faCalendarAlt, faClock);
+import EventDetails from "./components/EventDetails.vue";
+import EventPricing from "./components/EventPricing.vue";
 
 export default {
-  components: {
-    FontAwesomeIcon,
-  },
+  components: { EventDetails, EventPricing },
   data() {
     return {
-      event: {
-        title: "RB Thane Business Meet (Date Yet To Decide)",
-        description: "RB Thane Business Networking Meet. Expecting Members From Thane, Mumbai, Navi Mumbai, Nashik & From Near By Cities. Venue : Param Banquets",
-        location: "New Delhi, India",
-        date: "2025-03-15",
-        time: "6:00 PM",
-      },
-      costDetails: {
-        "Event Cost": 1000,
-        "Convenience Fee (2%)": 20,
-        "GST (18%)": 180,
-        "Total": 1200,
-      },
-      addonDetails: {
-        "Addon Fee": 500,
-        "Convenience Fee (2%)": 10,
-        "GST (18%)": 90,
-        "Addon Total": 600,
-      },
-      finalTotals: {
-        "Total Cost": 1800,
-        "Convenience Fee (2%)": 30,
-        "GST": 270,
-      },
-      finalAmount: 2100,
-      includeAddon: false,
+      eventData: {
+        image: "event-image.jpg",
+        title: "Exciting Music Concert",
+        description: "Join us for an unforgettable evening of live music and entertainment!",
+        venue: "City Hall, Downtown",
+        date: "March 15, 2025",
+        time: "6:00 PM - 10:00 PM",
+        basePrice: 500,
+        addonPrice: 100,
+        totalPrice: 600,
+        finalTotal: 700
+      }
     };
-  },
-  filters: {
-    currency(value) {
-      return new Intl.NumberFormat('en-IN', {
-        style: 'currency',
-        currency: 'INR',
-      }).format(value);
-    },
-  },
+  }
 };
-
-
 </script>
 
 <style scoped>
-.eventtitle{
-  font-size: 30px;
-  font-weight: 600;
+.event-left {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+  background: #f5f5f5;
+  padding: 16px;
 }
-
-.eventdescription{
-  font-size: 18px;
-  line-height: 24px;
-  font-weight: 400;
+.event-right {
+  overflow-y: auto;
+  max-height: 100vh;
+  padding: 16px;
 }
-.event-details{
-  font-size: 20px;
-  font-weight: 600;
-  color: #084e9d;
-}
-
-.eventcost{
-  font-size: 18px;
-  font-weight: 500;
-}
-
-.custom-button {
-  padding: 12px 16px;
-  font-size: 16px;
-  height: 48px;
-  margin-top: 18px;
-}
-
-.total-text{
-  font-size: 20px;
-  font-weight: 400;
-}
-
-.cost-text{
-  font-size: 22px;
-  font-weight: 500;
-  color: #084e9d;
-}
-
-.event-icon {
-  font-size: 1.2rem; /* Adjust icon size */
-  color: #084e9d; /* Adjust icon color */
-}
-
-.event-details-text {
-  font-size: 20px; /* Adjust text size */
-  font-weight: 500; /* Optionally make it bolder */
+@media (max-width: 960px) {
+  .event-left {
+    position: relative;
+    height: auto;
+    overflow: visible;
+  }
+  .event-right {
+    max-height: none;
+  }
 }
 </style>

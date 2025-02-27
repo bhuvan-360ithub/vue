@@ -6,7 +6,7 @@ import { useCustomizerStore } from '../../../stores/customizer';
 // dropdown imports
 import NotificationDD from './NotificationDD.vue';
 import ProfileDD from './ProfileDD.vue';
-import Searchbar from './SearchBarPanel.vue';
+// import Searchbar from './SearchBarPanel.vue';
 
 const customizer = useCustomizerStore();
 const priority = ref(customizer.setHorizontalLayout ? 0 : 0);
@@ -42,7 +42,7 @@ watch(priority, (newPriority) => {
     </v-btn>
 
     <!-- search mobile -->
-    <v-menu :close-on-content-click="false" class="hidden-lg-and-up" offset="10, 0">
+    <!-- <v-menu :close-on-content-click="false" class="hidden-lg-and-up" offset="10, 0">
       <template v-slot:activator="{ props }">
         <v-btn class="hidden-lg-and-up ml-1" color="secondary" icon rounded="sm" variant="text" size="small" v-bind="props">
           <div class="text-lightText d-flex align-center">
@@ -59,14 +59,14 @@ watch(priority, (newPriority) => {
           </template>
         </v-text-field>
       </v-sheet>
-    </v-menu>
+    </v-menu> -->
 
     <!-- ---------------------------------------------- -->
     <!-- Search part -->
     <!-- ---------------------------------------------- -->
-    <v-sheet color="transparent" class="d-none d-lg-block" width="224">
+    <!-- <v-sheet color="transparent" class="d-none d-lg-block" width="224">
       <Searchbar />
-    </v-sheet>
+    </v-sheet> -->
 
     <!---/Search part -->
 

@@ -1,88 +1,268 @@
-<script setup lang="ts">
-import Logo from '@/layouts/dashboard/logo/LogoMain.vue';
-import AuthRegister from '../authForms/AuthRegister.vue';
+<template>
+  <v-container fluid fill-height>
+    <v-row no-gutters>
+      <!-- Left Image Section -->
+      <v-col v-if="!isMobile" cols="12" md="7" class="image-section">
+        <v-img src="/your-image.jpg" class="full-height"></v-img>
+      </v-col>
+      
+      <!-- Right Registration & OTP Section -->
+      <v-col cols="12" md="5" class="login-section">
+        <v-card flat class="login-box">
+          <transition name="slide-fade" mode="out-in">
+            <div v-if="step === 1" key="step1" class="content-box">
+              <v-img src="/RB logo.png" class="logo center-logo" contain></v-img>
+              <h2 class="align-left large-text">Register to Continue</h2>
+              <p class="align-left description">Fill out the form to sign up and access your account now!</p>
+              <v-text-field v-model="companyName" label="Company Name" variant="outlined" append-inner-icon="pi pi-building" class="input-field full-width text-large"></v-text-field>
+              <v-text-field v-model="name" label="Name" variant="outlined" append-inner-icon="pi pi-user" class="input-field full-width text-large"></v-text-field>
+              <v-text-field v-model="phone" label="Phone Number" variant="outlined" append-inner-icon="pi pi-phone" maxlength="10" @keypress="allowOnlyNumbers" class="input-field full-width text-large"></v-text-field>
+              <v-text-field v-model="email" label="Email Address" variant="outlined" append-inner-icon="pi pi-envelope" class="input-field full-width text-large" @input="validateEmail"></v-text-field>
+              
+              <v-select 
+                v-model="referredBy" 
+                label="Referred By" 
+                variant="outlined" 
+                append-inner-icon="pi pi-users" 
+                :items="referralOptions" 
+                class="input-field full-width text-large"
+                @update:modelValue="checkRBMember"
+              ></v-select>
+              
+              <v-btn block color="primary" :disabled="!isFormValid" @click="sendOTP" class="register-btn">Register Now</v-btn>
+            </div>
+            <div v-else key="step2" class="content-box">
+              <v-img src="/RB logo.png" class="logo center-logo" contain></v-img>
+              <div class="back-button-container align-left">
+                <v-btn variant="text" class="back-button" @click="goBack">
+                  <i class="pi pi-arrow-left back-icon"></i> Back
+                </v-btn>
+              </div>
+              <h2 class="align-left">Enter OTP sent to {{ phone }}</h2>
+              <p class="align-left">Please enter the OTP sent to your mobile number.</p>
+              <v-row justify="start" class="otp-container">
+                <v-col v-for="(digit, index) in 4" :key="index" cols="3">
+                  <v-text-field ref="otpInputs" v-model="otp[index]" maxlength="1" variant="outlined" class="otp-box" @input="focusNext(index)" @keypress="allowOnlyNumbers"></v-text-field>
+                </v-col>
+              </v-row>
+              <p class="resend-otp-text" :class="{'active-resend': timer === 0}" @click="timer === 0 ? resendOTP() : null" :style="timer > 0 ? 'pointer-events: none; user-select: none;' : ''">
+                {{ timer > 0 ? `Resend OTP in ${timer} sec` : 'Resend OTP' }}
+              </p>
+              <v-btn block color="primary" :disabled="!isOtpValid" @click="verifyOTP" class="send-otp-btn">Confirm OTP</v-btn>
+            </div>
+          </transition>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
+</template>
 
-// assets
-import facebookImg from '@/assets/images/icons/facebook.svg';
-import twitterImg from '@/assets/images/icons/twitter.svg';
-import googleImg from '@/assets/images/icons/google.svg';
+<script>
+import 'primeicons/primeicons.css';
+
+export default {
+  data() {
+    return {
+      step: 1,
+      companyName: '',
+      name: '',
+      phone: '',
+      email: '',
+      referredBy: '',
+      otp: ['', '', '', ''],
+      referralOptions: ['RB System', 'RB Social Media', 'Ex - RB Member', 'RB Members'],
+      showRBMemberPopup: false,
+      searchRBMember: '',
+      rbMembers: Array.from({ length: 1000 }, (_, i) => ({ id: i + 1, name: `RB Member ${i + 1}` })),
+      selectedRBMember: null,
+      isMobile: false,
+      isEmailValid: false,
+      timer: 30,
+      interval: null
+    };
+  },
+  computed: {
+    isFormValid() {
+      return (
+        this.companyName &&
+        this.name &&
+        this.phone.length === 10 &&
+        this.isEmailValid &&
+        this.referredBy
+      );
+    },
+    isOtpValid() {
+      return this.otp.join('').length === 4;
+    }
+  },
+  methods: {
+    allowOnlyNumbers(event) {
+      if (!/\d/.test(event.key)) {
+        event.preventDefault();
+      }
+    },
+    validateEmail() {
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+      this.isEmailValid = emailPattern.test(this.email);
+    },
+    sendOTP() {
+      this.step = 2;
+      this.startTimer();
+    },
+    goBack() {
+      this.step = 1;
+      this.otp = ['', '', '', ''];
+      clearInterval(this.interval);
+      this.timer = 30;
+    },
+    focusNext(index) {
+      if (this.otp[index] && index < 3) {
+        this.$refs.otpInputs[index + 1].focus();
+      }
+    },
+    startTimer() {
+      this.timer = 30;
+      this.interval = setInterval(() => {
+        if (this.timer > 0) {
+          this.timer--;
+        } else {
+          clearInterval(this.interval);
+        }
+      }, 1000);
+    },
+    resendOTP() {
+      this.startTimer();
+    },
+    verifyOTP() {
+      alert('OTP Verified!');
+    }
+  }
+};
 </script>
 
-<template>
-  <v-row class="bg-containerBg position-relative" no-gutters>
-    <div class="bg-blur">
-      <div class="round-1"></div>
-      <div class="round-2"></div>
-    </div>
-    <!---Register Part-->
-    <v-col cols="12" lg="12" class="d-flex align-center">
-      <v-container>
-        <div class="d-flex align-center justify-center" style="min-height: calc(100vh - 148px)">
-          <v-row justify="center">
-            <v-col cols="12" md="12">
-              <v-card elevation="0" variant="outlined" rounded="lg" class="loginBox bg-surface">
-                <v-card-text class="pa-sm-10 pa-6">
-                  <div class="text-center">
-                    <Logo class="mb-3" />
-                    <v-list aria-label="social list" aria-busy="true">
-                      <v-list-item color="secondary" variant="tonal" href="#" rounded="md" class="mb-2">
-                        <v-img
-                          :src="facebookImg"
-                          alt="social icon"
-                          class="mr-2 d-inline-flex"
-                          style="vertical-align: text-top"
-                          width="9"
-                          height="16"
-                        />
-                        Sign in with facebook
-                      </v-list-item>
-                      <v-list-item color="secondary" variant="tonal" href="#" rounded="md" class="mb-2">
-                        <v-img
-                          :src="twitterImg"
-                          alt="social icon"
-                          class="mr-2 d-inline-flex"
-                          style="vertical-align: middle"
-                          width="16"
-                          height="13"
-                        />
-                        Sign in with twitter
-                      </v-list-item>
-                      <v-list-item color="secondary" variant="tonal" href="#" rounded="md" class="mb-2">
-                        <v-img
-                          :src="googleImg"
-                          alt="social icon"
-                          class="mr-2 d-inline-flex"
-                          style="vertical-align: text-top"
-                          width="16"
-                          height="16"
-                        />
-                        Sign in with google
-                      </v-list-item>
-                    </v-list>
-                    <v-row>
-                      <v-col cols="12" class="d-flex align-center">
-                        <v-divider />
-                        <div class="orbtn">OR</div>
-                        <v-divider />
-                      </v-col>
-                    </v-row>
-                  </div>
-                  <!---Register Form-->
-                  <AuthRegister />
-                  <!---Register Form-->
-                </v-card-text>
-              </v-card>
-            </v-col>
-          </v-row>
-        </div>
-      </v-container>
-    </v-col>
-    <!---Register Part-->
-  </v-row>
-</template>
-<style lang="scss">
-.loginBox {
-  max-width: 475px;
-  margin: 0 auto;
+<style scoped>
+.image-section {
+  background: url('/Business-network.jpg') center/cover no-repeat;
+  height: 100vh;
 }
+.full-height {
+  height: 100%;
+  width: 100%;
+}
+.login-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  padding: 40px;
+}
+.login-box {
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+.input-field {
+  width: 100%;
+}
+.text-large >>> input {
+  font-size: 22px !important;
+  padding: 12px;
+}
+.search-field {
+  width: 100%;
+}
+.register-btn {
+  width: 100%;
+  margin-top: 10px;
+  height: 50px;
+  font-size: 16px;
+}
+.large-text {
+  font-size: 22px;
+  font-weight: 600;
+  text-align: left;
+  margin-bottom: 15px;
+}
+
+.align-left {
+  text-align: left;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.description{
+  font-size: 16px;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+.center-logo {
+  display: block;
+  margin: 0 auto 20px auto;
+  width: 80px;
+}
+.scrollable-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.send-otp-btn {
+  margin-top: 10px;
+  height: 50px;
+  font-size: 16px;
+}
+.otp-box >>> input {
+  text-align: center;
+  font-size: 24px;
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+}
+.align-left {
+  text-align: left;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.description{
+  font-size: 16px;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.large-text {
+  font-size: 22px;
+  font-weight: 600;
+}
+.otp-container {
+  margin-bottom: 20px;
+}
+.back-button-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.back-button {
+  text-transform: none;
+  font-size: 16px;
+}
+.back-icon {
+  margin-right: 5px;
+}
+
+.resend-otp-text {
+  cursor: pointer;
+  text-align: left;
+  user-select: none;
+  margin-bottom: 10px;
+}
+
+.v-container{
+  padding: 0 !important;
+}
+
 </style>

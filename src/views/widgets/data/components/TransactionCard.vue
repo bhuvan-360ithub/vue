@@ -7,7 +7,7 @@
         cycle
         hide-delimiters
         show-arrows="false"
-        height="auto"
+        height="500px"
         @mouseenter="stopAutoScroll"
         @mouseleave="startAutoScroll"
       >
@@ -106,19 +106,19 @@ const stopAutoScroll = () => {
 }
 
 .v-carousel {
-  height: auto !important;
+  height: 250px !important;
 }
 
 .v-carousel-item {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: auto !important;
+  height: 250px !important;
 }
 
 .profile-card {
   width: 100%;
-  height: auto;
+  height: 250px;
   margin: 0 !important;
   padding: 16px !important;
 }
@@ -131,7 +131,7 @@ const stopAutoScroll = () => {
 
 .avatar {
   flex-shrink: 0;
-  margin-right: 16px;
+  margin-right: 28px;
 }
 
 .details {
