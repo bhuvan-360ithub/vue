@@ -58,18 +58,27 @@
     <!-- RB Member Selection Dialog -->
     <v-dialog v-model="showRBMemberPopup" max-width="500px">
       <v-card>
-        <v-card-title>Select RB Member</v-card-title>
+        <v-card-title class="d-flex justify-space-between align-center">
+          <span>Select RB Member</span>
+          <v-btn icon variant="text" @click="showRBMemberPopup = false">
+            <i class="pi pi-times"></i>
+          </v-btn>
+        </v-card-title>
         <v-card-text>
-          <v-text-field v-model="searchRBMember" label="Search Member"></v-text-field>
+          <v-text-field
+  v-model="searchRBMember"
+  placeholder="Search Member"
+  hide-details="auto"
+  variant="outlined"
+  class="custom-text-field"
+></v-text-field>
+
           <v-list class="scrollable-list">
             <v-list-item v-for="member in filteredRBMembers" :key="member.id" @click="selectRBMember(member)">
               {{ member.name }}
             </v-list-item>
           </v-list>
         </v-card-text>
-        <v-card-actions>
-          <v-btn text @click="showRBMemberPopup = false">Close</v-btn>
-        </v-card-actions>
       </v-card>
     </v-dialog>
   </v-container>
@@ -200,7 +209,7 @@ export default {
   text-align: center;
   font-size: 24px;
 }
-.description{
+.description {
   font-size: 16px;
   margin-bottom: 20px !important;
   margin-top: 20px !important;
@@ -215,7 +224,7 @@ export default {
 .resend-otp-text {
   cursor: pointer;
 }
-.v-container{
+.v-container {
   padding: 0 !important;
 }
 </style>
