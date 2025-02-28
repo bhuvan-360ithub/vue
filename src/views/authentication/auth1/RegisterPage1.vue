@@ -5,7 +5,7 @@
       <v-col v-if="!isMobile" cols="12" md="7" class="image-section">
         <v-img src="/your-image.jpg" class="full-height"></v-img>
       </v-col>
-      
+
       <!-- Right Registration & OTP Section -->
       <v-col cols="12" md="5" class="login-section">
         <v-card flat class="login-box">
@@ -14,23 +14,23 @@
               <v-img src="/RB logo.png" class="logo center-logo" contain></v-img>
               <h2 class="align-left large-text">Register to Continue</h2>
               <p class="align-left description">Fill out the form to sign up and access your account now!</p>
-              <v-text-field v-model="companyName" label="Company Name" variant="outlined" append-inner-icon="pi pi-building" class="input-field full-width text-large"></v-text-field>
-              <v-text-field v-model="name" label="Name" variant="outlined" append-inner-icon="pi pi-user" class="input-field full-width text-large"></v-text-field>
-              <v-text-field v-model="phone" label="Phone Number" variant="outlined" append-inner-icon="pi pi-phone" maxlength="10" @keypress="allowOnlyNumbers" class="input-field full-width text-large"></v-text-field>
-              <v-text-field v-model="email" label="Email Address" variant="outlined" append-inner-icon="pi pi-envelope" class="input-field full-width text-large" @input="validateEmail"></v-text-field>
-              
-              <v-select 
-                v-model="referredBy" 
-                label="Referred By" 
-                variant="outlined" 
-                append-inner-icon="pi pi-users" 
-                :items="referralOptions" 
+              <v-text-field v-model="companyName" label="Company Name" variant="outlined" class="input-field full-width text-large"></v-text-field>
+              <v-text-field v-model="name" label="Name" variant="outlined" class="input-field full-width text-large"></v-text-field>
+              <v-text-field v-model="phone" label="Phone Number" variant="outlined" maxlength="10" @keypress="allowOnlyNumbers" class="input-field full-width text-large"></v-text-field>
+              <v-text-field v-model="email" label="Email Address" variant="outlined" class="input-field full-width text-large" @input="validateEmail"></v-text-field>
+
+              <v-select
+                v-model="referredBy"
+                label="Referred By"
+                variant="outlined"
+                :items="referralOptions"
                 class="input-field full-width text-large"
                 @update:modelValue="checkRBMember"
               ></v-select>
-              
+
               <v-btn block color="primary" :disabled="!isFormValid" @click="sendOTP" class="register-btn">Register Now</v-btn>
             </div>
+
             <div v-else key="step2" class="content-box">
               <v-img src="/RB logo.png" class="logo center-logo" contain></v-img>
               <div class="back-button-container align-left">
@@ -39,13 +39,13 @@
                 </v-btn>
               </div>
               <h2 class="align-left">Enter OTP sent to {{ phone }}</h2>
-              <p class="align-left">Please enter the OTP sent to your mobile number.</p>
+              <p class="align-left description">Please enter the OTP sent to your mobile number.</p>
               <v-row justify="start" class="otp-container">
                 <v-col v-for="(digit, index) in 4" :key="index" cols="3">
                   <v-text-field ref="otpInputs" v-model="otp[index]" maxlength="1" variant="outlined" class="otp-box" @input="focusNext(index)" @keypress="allowOnlyNumbers"></v-text-field>
                 </v-col>
               </v-row>
-              <p class="resend-otp-text" :class="{'active-resend': timer === 0}" @click="timer === 0 ? resendOTP() : null" :style="timer > 0 ? 'pointer-events: none; user-select: none;' : ''">
+              <p class="resend-otp-text" :class="{'active-resend': timer === 0}" @click="timer === 0 ? resendOTP() : null">
                 {{ timer > 0 ? `Resend OTP in ${timer} sec` : 'Resend OTP' }}
               </p>
               <v-btn block color="primary" :disabled="!isOtpValid" @click="verifyOTP" class="send-otp-btn">Confirm OTP</v-btn>
@@ -54,12 +54,28 @@
         </v-card>
       </v-col>
     </v-row>
+
+    <!-- RB Member Selection Dialog -->
+    <v-dialog v-model="showRBMemberPopup" max-width="500px">
+      <v-card>
+        <v-card-title>Select RB Member</v-card-title>
+        <v-card-text>
+          <v-text-field v-model="searchRBMember" label="Search Member"></v-text-field>
+          <v-list class="scrollable-list">
+            <v-list-item v-for="member in filteredRBMembers" :key="member.id" @click="selectRBMember(member)">
+              {{ member.name }}
+            </v-list-item>
+          </v-list>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn text @click="showRBMemberPopup = false">Close</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
 <script>
-import 'primeicons/primeicons.css';
-
 export default {
   data() {
     return {
@@ -73,7 +89,7 @@ export default {
       referralOptions: ['RB System', 'RB Social Media', 'Ex - RB Member', 'RB Members'],
       showRBMemberPopup: false,
       searchRBMember: '',
-      rbMembers: Array.from({ length: 1000 }, (_, i) => ({ id: i + 1, name: `RB Member ${i + 1}` })),
+      rbMembers: Array.from({ length: 100 }, (_, i) => ({ id: i + 1, name: `RB Member ${i + 1}` })),
       selectedRBMember: null,
       isMobile: false,
       isEmailValid: false,
@@ -83,23 +99,21 @@ export default {
   },
   computed: {
     isFormValid() {
-      return (
-        this.companyName &&
-        this.name &&
-        this.phone.length === 10 &&
-        this.isEmailValid &&
-        this.referredBy
-      );
+      return this.companyName && this.name && this.phone.length === 10 && this.isEmailValid && this.referredBy;
     },
     isOtpValid() {
       return this.otp.join('').length === 4;
+    },
+    filteredRBMembers() {
+      if (!this.searchRBMember) return this.rbMembers;
+      return this.rbMembers.filter(member =>
+        member.name.toLowerCase().includes(this.searchRBMember.toLowerCase())
+      );
     }
   },
   methods: {
     allowOnlyNumbers(event) {
-      if (!/\d/.test(event.key)) {
-        event.preventDefault();
-      }
+      if (!/\d/.test(event.key)) event.preventDefault();
     },
     validateEmail() {
       const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -116,12 +130,11 @@ export default {
       this.timer = 30;
     },
     focusNext(index) {
-      if (this.otp[index] && index < 3) {
-        this.$refs.otpInputs[index + 1].focus();
-      }
+      if (this.otp[index] && index < 3) this.$refs.otpInputs[index + 1].focus();
     },
     startTimer() {
       this.timer = 30;
+      clearInterval(this.interval);
       this.interval = setInterval(() => {
         if (this.timer > 0) {
           this.timer--;
@@ -135,6 +148,18 @@ export default {
     },
     verifyOTP() {
       alert('OTP Verified!');
+    },
+    checkRBMember(value) {
+      if (value === 'RB Members') {
+        this.showRBMemberPopup = true;
+      } else {
+        this.showRBMemberPopup = false;
+      }
+    },
+    selectRBMember(member) {
+      this.selectedRBMember = member;
+      this.referredBy = `RB Member - ${member.name}`;
+      this.showRBMemberPopup = false;
     }
   }
 };
@@ -147,7 +172,6 @@ export default {
 }
 .full-height {
   height: 100%;
-  width: 100%;
 }
 .login-section {
   display: flex;
@@ -157,43 +181,7 @@ export default {
   padding: 40px;
 }
 .login-box {
-  width: 100%;
   max-width: 400px;
-  text-align: center;
-}
-.input-field {
-  width: 100%;
-}
-.text-large >>> input {
-  font-size: 22px !important;
-  padding: 12px;
-}
-.search-field {
-  width: 100%;
-}
-.register-btn {
-  width: 100%;
-  margin-top: 10px;
-  height: 50px;
-  font-size: 16px;
-}
-.large-text {
-  font-size: 22px;
-  font-weight: 600;
-  text-align: left;
-  margin-bottom: 15px;
-}
-
-.align-left {
-  text-align: left;
-  width: 100%;
-  margin-bottom: 10px;
-}
-
-.description{
-  font-size: 16px;
-  line-height: 1.5;
-  margin-bottom: 20px;
 }
 .center-logo {
   display: block;
@@ -204,16 +192,18 @@ export default {
   max-height: 300px;
   overflow-y: auto;
 }
-.close-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-}
-
-.send-otp-btn {
+.register-btn, .send-otp-btn {
   margin-top: 10px;
   height: 50px;
+}
+.otp-box >>> input {
+  text-align: center;
+  font-size: 24px;
+}
+.description{
   font-size: 16px;
+  margin-bottom: 20px !important;
+  margin-top: 20px !important;
 }
 .otp-box >>> input {
   text-align: center;
@@ -222,47 +212,10 @@ export default {
   height: 60px;
   border-radius: 8px;
 }
-.align-left {
-  text-align: left;
-  width: 100%;
-  margin-bottom: 10px;
-}
-
-.description{
-  font-size: 16px;
-  line-height: 1.5;
-  margin-bottom: 20px;
-}
-
-.large-text {
-  font-size: 22px;
-  font-weight: 600;
-}
-.otp-container {
-  margin-bottom: 20px;
-}
-.back-button-container {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-.back-button {
-  text-transform: none;
-  font-size: 16px;
-}
-.back-icon {
-  margin-right: 5px;
-}
-
 .resend-otp-text {
   cursor: pointer;
-  text-align: left;
-  user-select: none;
-  margin-bottom: 10px;
 }
-
 .v-container{
   padding: 0 !important;
 }
-
 </style>
