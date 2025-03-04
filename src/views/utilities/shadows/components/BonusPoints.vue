@@ -6,7 +6,6 @@
         </div>
         <h3 class="bonus-title">Bonus Points</h3>
         <p class="bonus-score">{{ points }}</p>
-        <p class="bonus-subtext">Earned so far</p>
       </v-container>
     </v-card>
   </template>
@@ -44,13 +43,13 @@
     margin-bottom: 10px;
   }
   .bonus-title {
-    font-size: 1rem;
-    font-weight: bold;
-    margin-bottom: 8px;
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-bottom: 2px;
   }
   .bonus-score {
-    font-size: 1.5rem;
-    font-weight: bold;
+    font-size: 36px;
+    font-weight: 600;
     color: #084e9d;
     margin-bottom: 5px;
   }

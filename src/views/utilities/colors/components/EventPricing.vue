@@ -11,25 +11,27 @@
       <v-card-text>
         <template v-if="!isFinal">
           <v-row>
-            <v-col cols="6">Base Price</v-col>
-            <v-col cols="6" class="text-right">{{ basePrice | currency }}</v-col>
+            <v-col class="fields" cols="6">Base Price</v-col>
+            <v-col cols="6" class="text-right value">{{ basePrice | currency }}</v-col>
           </v-row>
           <v-row v-if="isAddon">
-            <v-col cols="6">Addon Fee</v-col>
-            <v-col cols="6" class="text-right">{{ addonPrice | currency }}</v-col>
+            <v-col cols="6" class="fee-label">Addon Fee</v-col>
+            <v-col cols="6" class="text-right label-price">{{ addonPrice | currency }}</v-col>
           </v-row>
           <v-row>
-            <v-col cols="6">Convenience Fee (2%)</v-col>
-            <v-col cols="6" class="text-right">{{ convenienceFee | currency }}</v-col>
+            <v-col cols="6" class="fee-label">Convenience Fee (2%)</v-col>
+            <v-col cols="6" class="text-right label-price">{{ convenienceFee | currency }}</v-col>
           </v-row>
           <v-row>
-            <v-col cols="6">GST (18%)</v-col>
-            <v-col cols="6" class="text-right">{{ gst | currency }}</v-col>
+            <v-col cols="6" class="fee-label">GST (18%)</v-col>
+            <v-col cols="6" class="text-right label-price">{{ gst | currency }}</v-col>
           </v-row>
+          <hr class="divider">
         </template>
+        
         <v-row>
-          <v-col cols="6" class="font-weight-bold">{{ isFinal ? 'Grand Total' : 'Total' }}</v-col>
-          <v-col cols="6" class="text-right font-weight-bold">{{ computedTotal | currency }}</v-col>
+          <v-col cols="6" class="font-weight-bold total-label">{{ isFinal ? 'Grand Total' : 'Total' }}</v-col>
+          <v-col cols="6" class="text-right font-weight-bold total-value">{{ computedTotal | currency }}</v-col>
         </v-row>
         <v-row v-if="isFinal" class="mt-4">
           <v-col>
@@ -107,7 +109,7 @@
   .event-pricing-card {
     margin-bottom: 16px;
     padding: 16px;
-    background: #f9f9f9;
+    background: #ffffff;
     border-radius: 8px;
   }
   .headline {
@@ -119,6 +121,43 @@
   .checkbox-align {
     display: flex;
     align-items: center;
+  }
+
+  .fields{
+    font-size: 18px;
+    font-weight: 500;
+  }
+
+  .value{
+    font-size: 18px;
+    font-weight: 600;
+    text-align: right;
+  }
+
+  .fee-label{
+    font-size: 18px;
+    font-weight: 500;
+  }
+
+  .label-price{
+    font-size: 18px;
+    font-weight: 600;
+    text-align: right;
+  }
+
+  .total-label{
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  .total-value{
+    font-size: 22px;
+    font-weight: 600;
+    text-align: right;
+  }
+  .divider{
+    margin: 10px;
+    opacity: 0.4;
   }
   </style>
   

@@ -6,25 +6,25 @@
         v-for="info in infoDetails"
         :key="info.label"
         align="center"
-        class="mb-2"
+        class="mb-2 info-row"
         no-gutters
       >
-        <!-- Icon Column (No Extra Space) -->
-        <v-col auto class="pa-0 ma-0 d-flex align-center">
+        <v-col cols="auto" class="pa-0 ma-0">
           <div class="icon-container">
             <i :class="info.icon"></i>
           </div>
         </v-col>
 
-        <!-- Text Column (Increased Spacing) -->
-        <v-col class="pa-0 ma-0 d-flex flex-column ml-4">
-          <span class="font-weight-bold">{{ info.label }}</span>
-          <span>{{ info.value }}</span>
+        <v-col class="pa-0 ma-0 ml-3">
+          <div class="text-content">
+            <span class="font-weight-normal">{{ info.label }}</span>
+            <span class="info-value font-weight-bold value">{{ info.value }}</span>
+          </div>
         </v-col>
       </v-row>
 
       <h4 class="mt-4">About Me</h4>
-      <p class="mt-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin vel neque eu augue cursus venenatis.</p>
+      <p class="mt-2">Lorem ipsum odor amet, consectetuer adipiscing elit. Platea ridiculus non justo primis venenatis quam dapibus suspendisse. Nunc sapien tempor elementum finibus bibendum dictum. Quis a amet interdum vestibulum ac velit urna.</p>
     </v-container>
   </v-card>
 </template>
@@ -51,12 +51,35 @@ export default {
   background-color: #084e9d;
   color: white;
   border-radius: 50%;
-  width: 35px; /* Adjusted size */
-  height: 35px;
+  width: 30px;
+  height: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1rem;
+  font-size: 15px;
+}
+
+/* Container for label and value, aligned left */
+.text-content {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.info-value {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+/* Optional - Add some vertical spacing if needed */
+.info-row {
+  align-items: center;
+}
+
+.value{
+  font-size: 18px;
+  font-weight: 500 !important;
+  color: black;
 }
 </style>
-x
+

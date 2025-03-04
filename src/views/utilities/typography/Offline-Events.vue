@@ -29,7 +29,7 @@
                 </div>
                 <span>{{ event.location }}</span>
               </v-row>
-              <v-btn color="primary" class="view-button">View</v-btn>
+              <v-btn color="primary" class="view-button" @click="navigateToColors">View</v-btn>
             </div>
           </v-container>
         </v-card>
@@ -77,9 +77,15 @@ export default {
         }
       ]
     };
+  },
+  methods: {
+    navigateToColors() {
+      this.$router.push('/utils/colors');  // This navigates to the Colors page
+    }
   }
 };
 </script>
+
 
 <style scoped>
 .event-card {

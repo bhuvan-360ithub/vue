@@ -21,17 +21,19 @@
 </template>
 
 <script>
+import OfflineEventImage from '@/assets/images/Offline-event.jpg';
 import EventDetails from "./components/EventDetails.vue";
 import EventPricing from "./components/EventPricing.vue";
+
 
 export default {
   components: { EventDetails, EventPricing },
   data() {
     return {
       eventData: {
-        image: "event-image.jpg",
-        title: "Exciting Music Concert",
-        description: "Join us for an unforgettable evening of live music and entertainment!",
+        image: OfflineEventImage,
+        title: "RB Chennai Business Meet (09032025)",
+        description: "Lorem ipsum odor amet, consectetuer adipiscing elit. Penatibus in eleifend sollicitudin lacus convallis tempus. Sit velit euismod eu senectus fames montes lacus efficitur taciti?",
         venue: "City Hall, Downtown",
         date: "March 15, 2025",
         time: "6:00 PM - 10:00 PM",
@@ -51,7 +53,7 @@ export default {
   top: 0;
   height: 100vh;
   overflow: hidden;
-  background: #f5f5f5;
+  background: transparent;
   padding: 16px;
 }
 .event-right {
